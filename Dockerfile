@@ -40,12 +40,6 @@ ENTRYPOINT ["/server"]
 
 
 FROM debian:latest AS db
-RUN apt update \
-    && apt install -y \
-        mariadb-server \
-        mariadb-client \
-    && rm -rf /var/lib/apt/lists/*
-
 
 FROM db AS ALLINONE
 LABEL MAINTAINER="https://casdoor.org/"
