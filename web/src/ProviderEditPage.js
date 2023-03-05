@@ -20,9 +20,11 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import {authConfig} from "./auth/Auth";
 import * as ProviderEditTestEmail from "./TestEmailWidget";
+import * as ProviderEditTestSms from "./TestSmsWidget";
 import copy from "copy-to-clipboard";
 import {CaptchaPreview} from "./common/CaptchaPreview";
 import * as OrganizationBackend from "./backend/OrganizationBackend";
+import {PhoneNumberInput} from "./common/PhoneNumberInput";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -596,7 +598,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Email Title"), i18next.t("provider:Email Title - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Email title"), i18next.t("provider:Email title - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <Input value={this.state.provider.title} onChange={e => {
@@ -606,7 +608,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("provider:Email Content"), i18next.t("provider:Email Content - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("provider:Email content"), i18next.t("provider:Email content - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <TextArea autoSize={{minRows: 3, maxRows: 100}} value={this.state.provider.content} onChange={e => {
@@ -629,7 +631,7 @@ class ProviderEditPage extends React.Component {
                 <Button style={{marginLeft: "10px", marginBottom: "5px"}} type="primary"
                   disabled={!Setting.isValidEmail(this.state.provider.receiver)}
                   onClick={() => ProviderEditTestEmail.sendTestEmail(this.state.provider, this.state.provider.receiver)} >
-                  {i18next.t("provider:Send Test Email")}
+                  {i18next.t("provider:Send Testing Email")}
                 </Button>
               </Row>
             </React.Fragment>
@@ -657,6 +659,36 @@ class ProviderEditPage extends React.Component {
                   <Input value={this.state.provider.templateCode} onChange={e => {
                     this.updateProviderField("templateCode", e.target.value);
                   }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:SMS Test"), i18next.t("provider:SMS Test - Tooltip"))} :
+                </Col>
+                <Col span={4} >
+                  <Input.Group compact>
+                    <PhoneNumberInput
+                      style={{width: "30%"}}
+                      value={this.state.provider.content}
+                      onChange={(value) => {
+                        this.updateProviderField("content", value);
+                      }}
+                      countryCodes={this.props.account.organization.countryCodes}
+                    />
+                    <Input value={this.state.provider.receiver}
+                      style={{width: "70%"}}
+                      placeholder = {i18next.t("user:Input your phone number")}
+                      onChange={e => {
+                        this.updateProviderField("receiver", e.target.value);
+                      }} />
+                  </Input.Group>
+                </Col>
+                <Col span={2} >
+                  <Button style={{marginLeft: "10px", marginBottom: "5px"}} type="primary"
+                    disabled={!Setting.isValidPhone(this.state.provider.receiver)}
+                    onClick={() => ProviderEditTestSms.sendTestSms(this.state.provider, "+" + Setting.getCountryCode(this.state.provider.content) + this.state.provider.receiver)} >
+                    {i18next.t("provider:Send Testing SMS")}
+                  </Button>
                 </Col>
               </Row>
             </React.Fragment>
